@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const studentSchema = mongoose.Schema({
   name: {
@@ -8,15 +9,16 @@ const studentSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: [true, 'A student must have an email']
+    unique: [true, 'A student must have a unique email'],
+    validate: [
+      validator.isEmail && this.email.endsWith('@thapar.edu'),
+      'Please provide a valid thapar email'
+    ]
   },
-  hostel: {
-    type: String,
-    required: [true, 'Student must have a current hostel']
-  },
-  currentRoom: {
-    type: String,
-    required: [true, 'Student must have a current Room Number']
+  mobileNumber: {
+    type: Number,
+    required: [true, 'Please specify your phone number'],
+    validate: [validator.isMobilePhone, 'Please enter a valid mobile Number']
   },
   password: {
     type: String,
@@ -44,4 +46,4 @@ const studentSchema = mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Student',studentSchema)
+module.exports = mongoose.model('Student', studentSchema);

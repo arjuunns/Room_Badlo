@@ -1,12 +1,23 @@
 const express = require('express');
 const morgan = require('morgan');
+const roomRouter = require('./routes/roomRoutes');
+const userRouter = require('./routes/userRoutes');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
+
 const app = express();
+
+app.use(express.json()); // body parser
 
 app.use(morgan('dev'));
 
-const userRouter = require('./routes/userRoutes');
-
-
+app.use('/api/v1/rooms', roomRouter);
 app.use('/api/v1/users', userRouter);
+
+app.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`,404));
+});
+
+app.use(globalErrorHandler);
 
 module.exports = app;
